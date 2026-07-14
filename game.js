@@ -30,17 +30,17 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){const j=randi(0,i);[a[i],a[j]
 // ---------- Definición de niveles ----------
 const LEVELS = [
   {
-    biome:'DESIERTO', key:'desert', enemies:3, ammo:6, time:60,
+    biome:'DESIERTO', key:'desert', enemies:3, ammo:10, time:60,
     baseReveal:0.24, peekReveal:0.74, peekEvery:[2.4,4.2], decoys:2, distractors:5,
     sky:['#f6b25a','#e07b3a','#7a3b2e'], ground:['#c79a5c','#a9793f'], camo:'#6e5836'
   },
   {
-    biome:'CIUDAD', key:'city', enemies:4, ammo:6, time:56,
+    biome:'CIUDAD', key:'city', enemies:4, ammo:10, time:56,
     baseReveal:0.20, peekReveal:0.70, peekEvery:[2.6,4.6], decoys:3, distractors:5,
     sky:['#2b3b6b','#334a86','#8a6c9e'], ground:['#3a3f4a','#2a2d35'], camo:'#39414f'
   },
   {
-    biome:'BOSQUE', key:'forest', enemies:5, ammo:7, time:54,
+    biome:'BOSQUE', key:'forest', enemies:5, ammo:10, time:54,
     baseReveal:0.17, peekReveal:0.68, peekEvery:[2.8,5.0], decoys:3, distractors:6,
     sky:['#8fc7d4','#b6d9c2','#dce9c0'], ground:['#3f5a2e','#2c4322'], camo:'#31461f'
   }

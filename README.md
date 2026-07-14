@@ -24,9 +24,9 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 La clave es el **movimiento**. Un enemigo real "se asoma" cada pocos segundos (una parte del cuerpo aparece y su silueta gana contraste). Los señuelos no hacen eso. Usa el **zoom** para inspeccionar coberturas sospechosas: cactus, edificios, árboles y arbustos.
 
 ## 🗺️ Niveles
-1. **Desierto** — 3 objetivos · 6 balas · 60 s
-2. **Ciudad** — 4 objetivos · 6 balas · 56 s
-3. **Bosque** — 5 objetivos · 7 balas · 54 s
+1. **Desierto** — 3 objetivos · 10 balas · 60 s
+2. **Ciudad** — 4 objetivos · 10 balas · 56 s
+3. **Bosque** — 5 objetivos · 10 balas · 54 s
 
 ## ▶️ Ejecutar
 Solo abre `index.html` en un navegador. En WSL:
