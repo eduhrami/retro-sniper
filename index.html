@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+  <title>RETRO SNIPER</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="stage">
+    <!-- Escena del juego -->
+    <canvas id="game" width="480" height="270"></canvas>
+
+    <!-- Overlay de mira de francotirador -->
+    <div id="scope" class="scope hidden">
+      <div class="scope-ring"></div>
+      <div class="reticle reticle-v"></div>
+      <div class="reticle reticle-h"></div>
+      <div class="reticle-dot"></div>
+      <div class="mil mil-1"></div>
+      <div class="mil mil-2"></div>
+      <div class="mil mil-3"></div>
+      <div class="mil mil-1b"></div>
+      <div class="mil mil-2b"></div>
+      <div class="mil mil-3b"></div>
+    </div>
+
+    <!-- HUD -->
+    <div id="hud" class="hud hidden">
+      <div class="hud-row hud-top">
+        <div class="hud-box">
+          <span class="hud-label">NIVEL</span>
+          <span id="hud-level" class="hud-val">1</span>
+          <span id="hud-biome" class="hud-sub">DESIERTO</span>
+        </div>
+        <div class="hud-box hud-center">
+          <span class="hud-label">TIEMPO</span>
+          <span id="hud-time" class="hud-val big">60</span>
+        </div>
+        <div class="hud-box hud-right">
+          <span class="hud-label">MUNICIÓN</span>
+          <span id="hud-ammo" class="hud-val ammo">●●●●●●</span>
+        </div>
+      </div>
+      <div class="hud-row hud-bottom">
+        <div class="hud-tag">OBJETIVOS <b id="hud-alive">3</b></div>
+        <div class="hud-tag hud-kill">ELIMINADOS <b id="hud-killed">0</b></div>
+        <div class="hud-tag hud-warn" id="hud-msg"></div>
+      </div>
+    </div>
+
+    <!-- Efecto CRT -->
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- Pantallas -->
+    <div id="overlay" class="overlay">
+      <div class="panel">
+        <h1 class="title glitch" data-text="RETRO SNIPER">RETRO SNIPER</h1>
+        <p class="tagline">// OPERACIÓN: CAZADOR OCULTO //</p>
+        <div class="briefing">
+          <p>Los enemigos están <b>MUY bien camuflados</b> en el paisaje.</p>
+          <p>Apenas se ven. Observa el movimiento: una silueta, un miembro que asoma...</p>
+          <ul>
+            <li><b class="c-en">◆</b> Elimina a todos los objetivos antes de que acabe el tiempo.</li>
+            <li><b class="c-am">▮</b> Munición limitada. Cada disparo cuenta.</li>
+            <li><b class="c-de">✖</b> Cuidado con <b>señuelos</b> y <b>fauna</b>: gastan bala.</li>
+          </ul>
+        </div>
+        <button id="startBtn" class="btn">INICIAR MISIÓN</button>
+        <p class="controls">RATÓN: apuntar &nbsp;·&nbsp; CLIC: disparar &nbsp;·&nbsp; MANTÉN CLIC DER. / ESPACIO: zoom</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="fx-flash" class="fx-flash"></div>
+  <script src="game.js"></script>
+</body>
+</html>

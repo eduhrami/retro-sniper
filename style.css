@@ -1,0 +1,132 @@
+/* ========= RETRO SNIPER — estilos CRT / arcade ========= */
+:root{
+  --green:#3cff6e;
+  --green-dim:#1c7a37;
+  --amber:#ffb01f;
+  --red:#ff3b3b;
+  --bg:#05070a;
+  --scan:rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#000;overflow:hidden}
+body{
+  font-family:"Courier New",monospace;
+  color:var(--green);
+  display:flex;align-items:center;justify-content:center;
+  -webkit-font-smoothing:none;
+  cursor:none;
+}
+
+#stage{
+  position:relative;
+  width:min(100vw,177.78vh);
+  height:min(56.25vw,100vh);
+  background:#000;
+  overflow:hidden;
+  box-shadow:0 0 60px rgba(60,255,110,.08), inset 0 0 120px rgba(0,0,0,.6);
+}
+
+#game{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+  display:block;
+}
+
+/* ============ MIRA DE FRANCOTIRADOR ============ */
+.scope{position:absolute;left:0;top:0;width:0;height:0;pointer-events:none;z-index:20;transform:translate(-50%,-50%)}
+.scope.hidden{display:none}
+.scope-ring{
+  position:absolute;left:50%;top:50%;
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(60,255,110,.85);
+  transform:translate(-50%,-50%);
+  box-shadow:0 0 0 1px rgba(0,0,0,.6), 0 0 14px rgba(60,255,110,.4);
+}
+.reticle{position:absolute;left:50%;top:50%;background:rgba(60,255,110,.9)}
+.reticle-v{width:1px;height:200vh;transform:translate(-50%,-50%)}
+.reticle-h{width:200vw;height:1px;transform:translate(-50%,-50%)}
+.reticle-dot{position:absolute;left:50%;top:50%;width:3px;height:3px;background:var(--red);border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 6px var(--red)}
+.mil{position:absolute;left:50%;top:50%;background:rgba(60,255,110,.8)}
+.mil-1,.mil-2,.mil-3{width:1px;height:4px;transform:translate(-50%,-50%)}
+.mil-1{margin-top:-9px}.mil-2{margin-top:-14px}.mil-3{margin-top:-19px}
+.mil-1b,.mil-2b,.mil-3b{width:1px;height:4px;transform:translate(-50%,-50%)}
+.mil-1b{margin-top:9px}.mil-2b{margin-top:14px}.mil-3b{margin-top:19px}
+
+/* ============ HUD ============ */
+.hud{position:absolute;inset:0;z-index:15;pointer-events:none;display:flex;flex-direction:column;justify-content:space-between;padding:2.2% 3%}
+.hud.hidden{display:none}
+.hud-row{display:flex;justify-content:space-between;align-items:flex-start}
+.hud-box{display:flex;flex-direction:column;line-height:1.05;text-shadow:0 0 6px rgba(60,255,110,.6)}
+.hud-center{align-items:center}
+.hud-right{align-items:flex-end}
+.hud-label{font-size:clamp(7px,1.1vw,12px);letter-spacing:2px;color:var(--green-dim)}
+.hud-val{font-size:clamp(13px,2.4vw,26px);font-weight:bold;letter-spacing:1px}
+.hud-val.big{font-size:clamp(18px,3.4vw,40px)}
+.hud-sub{font-size:clamp(6px,1vw,11px);letter-spacing:3px;color:var(--amber)}
+.hud-val.ammo{color:var(--amber);text-shadow:0 0 6px rgba(255,176,31,.7);font-size:clamp(14px,2.6vw,28px)}
+.hud-val.ammo .spent{color:#3a2b0c;text-shadow:none}
+.hud-bottom{align-items:flex-end}
+.hud-tag{font-size:clamp(8px,1.4vw,15px);letter-spacing:2px;background:rgba(0,20,6,.55);border:1px solid var(--green-dim);padding:2px 8px;text-shadow:0 0 5px rgba(60,255,110,.5)}
+.hud-tag b{color:#fff}
+.hud-kill b{color:var(--amber)}
+.hud-warn{border-color:var(--red);color:var(--red);text-shadow:0 0 6px rgba(255,59,59,.7);min-width:1px;background:none;border:none;font-weight:bold}
+
+/* ============ CRT ============ */
+.crt-scanlines{position:absolute;inset:0;z-index:30;pointer-events:none;
+  background:repeating-linear-gradient(to bottom,rgba(0,0,0,0) 0,rgba(0,0,0,0) 2px,var(--scan) 3px,var(--scan) 3px);
+  mix-blend-mode:multiply;opacity:.55}
+.crt-vignette{position:absolute;inset:0;z-index:29;pointer-events:none;
+  background:radial-gradient(ellipse at center,rgba(0,0,0,0) 55%,rgba(0,0,0,.75) 100%)}
+
+/* ============ OVERLAY / PANTALLAS ============ */
+.overlay{position:absolute;inset:0;z-index:40;display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse at center,#08130b 0%,#020403 100%);cursor:auto}
+.overlay.hidden{display:none}
+.panel{max-width:88%;text-align:center;padding:4% 5%;border:2px solid var(--green-dim);
+  background:rgba(3,12,6,.85);box-shadow:0 0 30px rgba(60,255,110,.15),inset 0 0 40px rgba(0,0,0,.6)}
+.title{font-size:clamp(24px,6vw,64px);letter-spacing:6px;color:var(--green);
+  text-shadow:0 0 10px rgba(60,255,110,.8),3px 3px 0 var(--green-dim)}
+.tagline{color:var(--amber);letter-spacing:4px;margin:.4em 0 1.2em;font-size:clamp(9px,1.6vw,16px)}
+.briefing{text-align:left;display:inline-block;font-size:clamp(9px,1.5vw,15px);line-height:1.7;color:#bfeecb}
+.briefing b{color:#fff}
+.briefing ul{list-style:none;margin:.6em 0 0}
+.briefing li{margin:.15em 0}
+.c-en{color:var(--green)}.c-am{color:var(--amber)}.c-de{color:var(--red)}
+.btn{margin-top:1.4em;font-family:inherit;font-size:clamp(12px,2.2vw,22px);font-weight:bold;letter-spacing:3px;
+  color:#020403;background:var(--green);border:none;padding:.6em 1.6em;cursor:pointer;
+  box-shadow:0 0 18px rgba(60,255,110,.6);transition:transform .08s, box-shadow .2s}
+.btn:hover{transform:scale(1.05);box-shadow:0 0 28px rgba(60,255,110,.9)}
+.btn:active{transform:scale(.98)}
+.btn.amber{background:var(--amber);box-shadow:0 0 18px rgba(255,176,31,.6)}
+.btn.red{background:var(--red);color:#fff;box-shadow:0 0 18px rgba(255,59,59,.6)}
+.controls{margin-top:1.2em;color:var(--green-dim);letter-spacing:2px;font-size:clamp(8px,1.3vw,13px)}
+.result-stats{margin:1em 0;font-size:clamp(11px,1.8vw,18px);line-height:1.9;color:#cfeed8}
+.result-stats b{color:#fff}
+.result-stats .good{color:var(--green)}
+.result-stats .bad{color:var(--red)}
+
+/* glitch title */
+.glitch{position:relative}
+.glitch::before,.glitch::after{content:attr(data-text);position:absolute;left:0;top:0;width:100%;opacity:.7}
+.glitch::before{color:var(--red);animation:g1 2.6s infinite steps(2)}
+.glitch::after{color:#1fd4ff;animation:g2 3.1s infinite steps(2)}
+@keyframes g1{0%,92%,100%{transform:translate(0,0);opacity:0}93%{transform:translate(-2px,1px);opacity:.6}96%{transform:translate(2px,-1px);opacity:.5}}
+@keyframes g2{0%,90%,100%{transform:translate(0,0);opacity:0}91%{transform:translate(2px,1px);opacity:.5}97%{transform:translate(-2px,0);opacity:.6}}
+
+/* muzzle flash / hit flash */
+.fx-flash{position:fixed;inset:0;z-index:60;pointer-events:none;background:#fff;opacity:0}
+.fx-flash.fire{animation:muzzle .12s ease-out}
+.fx-flash.hit{animation:hitflash .35s ease-out}
+.fx-flash.dmg{animation:dmgflash .4s ease-out;background:var(--red)}
+@keyframes muzzle{0%{opacity:.55}100%{opacity:0}}
+@keyframes hitflash{0%{opacity:.35;background:var(--green)}100%{opacity:0;background:var(--green)}}
+@keyframes dmgflash{0%{opacity:.45}100%{opacity:0}}
+
+/* shake */
+.shake{animation:shake .18s}
+@keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-2px)}}
+
+.hidden{display:none!important}
