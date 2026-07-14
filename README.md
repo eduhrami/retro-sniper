@@ -23,10 +23,16 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 ### 💡 Truco
 La clave es el **movimiento**. Un enemigo real "se asoma" cada pocos segundos (una parte del cuerpo aparece y su silueta gana contraste). Los señuelos no hacen eso. Usa el **zoom** para inspeccionar coberturas sospechosas: cactus, edificios, árboles y arbustos.
 
-## 🗺️ Niveles
-1. **Desierto** — 3 objetivos · 10 balas · 60 s
-2. **Ciudad** — 4 objetivos · 10 balas · 56 s
-3. **Bosque** — 5 objetivos · 10 balas · 54 s
+## 🗺️ Niveles (7 biomas)
+1. **Desierto** 🌵 — 3 objetivos · 10 balas · 60 s
+2. **Playa** 🏖️ — 3 objetivos · 10 balas · 58 s
+3. **Ciudad** 🏙️ — 4 objetivos · 10 balas · 56 s
+4. **Bosque** 🌲 — 5 objetivos · 10 balas · 54 s
+5. **Bajo el mar** 🌊 — 5 objetivos · 10 balas · 54 s
+6. **Hielo** ❄️ — 6 objetivos · 10 balas · 52 s
+7. **Espacio exterior** 🚀 — 7 objetivos · 10 balas · 50 s
+
+Cada bioma tiene su propio paisaje, coberturas donde esconderse (cactus, palmeras, edificios, árboles, corales, bloques de hielo, cristales alienígenas…) y su propia fauna que cruza la escena (aves, cangrejos, peces, pingüinos, ovnis, etc.).
 
 ## ▶️ Ejecutar
 Solo abre `index.html` en un navegador. En WSL:
