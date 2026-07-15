@@ -94,6 +94,7 @@ const game = {
   holes:[], puffs:[], corpses:[], tracers:[],
   hp:5, maxHP:5, crouched:false, threat:false,
   msg:'', msgTimer:0,
+  hintT:0, coverHints:0,   // aviso guía: sólo las primeras veces de la partida
   aimX:W/2, aimY:H/2,   // en coords de mundo
   mouse:{x:0.5,y:0.5},  // normalizado 0..1 en pantalla
   zoom:false, zoomScale:2.3, viewZoom:1,
@@ -159,6 +160,7 @@ const D = {
   ammo:document.getElementById('hud-ammo'),
   health:document.getElementById('hud-health'),
   threat:document.getElementById('threat'),
+  hint:document.getElementById('hint'),
   cover:document.getElementById('cover'),
   crouchBtn:document.getElementById('crouchBtn'),
   alive:document.getElementById('hud-alive'),
@@ -182,6 +184,7 @@ function buildLevel(idx){
   game.zoom = false; game.viewZoom = 1;
   game.hp = game.maxHP; game.crouched = false; game.threat = false;
   game.msg=''; game.msgTimer=0; game._noAmmoT=0;
+  hideHint();
 
   // capas de fondo lejano
   buildBackground(L);
@@ -603,6 +606,9 @@ function update(dt){
 
   // mensaje temporal
   if(game.msgTimer>0){ game.msgTimer-=dt; if(game.msgTimer<=0){ game.msg=''; updateHUD(); } }
+
+  // aviso guía temporal
+  if(game.hintT>0){ game.hintT-=dt; if(game.hintT<=0) hideHint(); }
 
   // shake
   if(game.shakeT>0) game.shakeT-=dt;
@@ -1600,6 +1606,11 @@ function shoot(){
     game.holes.push({x:ax|0,y:ay|0});
     for(let i=0;i<4;i++) addPuff(ax, ay, '#ffd67a', 2, 0.25); // chispas
     flashMsg('¡A CUBIERTO! espera a que salga', 1.5);
+    // las primeras veces, explica la mecánica
+    game.coverHints++;
+    if(game.coverHints<=3){
+      showHint('🛡 <b>El enemigo está protegido</b>, debes esperar a que salga para dispararle.', 3.0);
+    }
     // a veces el impacto lo espanta y sale corriendo (queda al descubierto)
     if(Math.random()<0.5) startRun(blockedE);
     updateHUD();
@@ -1649,10 +1660,12 @@ function endLevel(success, reason){
   D.scope.classList.add('hidden');
   D.crouchBtn.classList.add('hidden');
   D.threat.classList.add('hidden');
+  hideHint();
   document.body.style.cursor='auto';
 }
 
 function startLevel(idx){
+  if(idx===0) game.coverHints=0;   // partida nueva: vuelve a explicarse
   buildLevel(idx);
   game.screen='play';
   setCrouch(false);
@@ -1683,6 +1696,9 @@ function updateHUD(){
 function tickHUDTime(){ D.time.textContent = Math.max(0,Math.ceil(game.timeLeft)); }
 
 function flashMsg(m,t){ game.msg=m; game.msgTimer=t; D.msg.textContent=m; }
+// aviso guía grande y centrado (se oculta solo)
+function showHint(html,t){ D.hint.innerHTML=html; D.hint.classList.remove('hidden'); game.hintT=t; }
+function hideHint(){ game.hintT=0; D.hint.classList.add('hidden'); }
 function flash(cls){ D.flash.classList.remove('fire','hit','dmg'); void D.flash.offsetWidth; D.flash.classList.add(cls); }
 
 function overlayPanel(html){
