@@ -68,6 +68,32 @@ body{
 .hud-sub{font-size:clamp(6px,1vw,11px);letter-spacing:3px;color:var(--amber)}
 .hud-val.ammo{color:var(--amber);text-shadow:0 0 6px rgba(255,176,31,.7);font-size:clamp(14px,2.6vw,28px)}
 .hud-val.ammo .spent{color:#3a2b0c;text-shadow:none}
+.hud-val.health{color:var(--red);text-shadow:0 0 6px rgba(255,59,59,.7);font-size:clamp(13px,2.3vw,24px);letter-spacing:1px}
+.hud-val.health .lost{color:#3a1010;text-shadow:none}
+
+/* aviso de amenaza */
+.threat{position:absolute;top:16%;left:50%;transform:translateX(-50%);z-index:22;pointer-events:none;
+  color:#fff;background:rgba(180,20,20,.75);border:1px solid var(--red);padding:4px 14px;
+  font-weight:bold;letter-spacing:2px;font-size:clamp(10px,1.8vw,18px);
+  text-shadow:0 0 6px rgba(0,0,0,.6);animation:threatpulse .5s infinite alternate;box-shadow:0 0 20px rgba(255,59,59,.6)}
+@keyframes threatpulse{from{opacity:.55;transform:translateX(-50%) scale(1)}to{opacity:1;transform:translateX(-50%) scale(1.06)}}
+
+/* cobertura al agacharse */
+.cover{position:absolute;left:0;right:0;bottom:0;height:0;z-index:24;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(0,0,0,0),#050505 40%);
+  border-top:3px solid #111;transition:height .12s ease-out;box-shadow:0 -6px 20px rgba(0,0,0,.5)}
+.cover.up{height:62%}
+.cover.up::after{content:'AGACHADO — a cubierto';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  color:var(--green);letter-spacing:2px;font-size:clamp(8px,1.4vw,14px);text-shadow:0 0 6px rgba(60,255,110,.6)}
+
+/* botón cubrirse */
+.crouch-btn{position:absolute;right:3%;bottom:14%;z-index:25;cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;line-height:1.1;
+  color:#020403;background:var(--green);padding:8px 14px;border-radius:4px;
+  font-weight:bold;letter-spacing:1px;font-size:clamp(9px,1.5vw,14px);user-select:none;
+  box-shadow:0 0 14px rgba(60,255,110,.5);opacity:.85}
+.crouch-btn small{font-size:.7em;opacity:.7;letter-spacing:1px}
+.crouch-btn:active,.crouch-btn.on{background:var(--amber);transform:scale(.96);box-shadow:0 0 18px rgba(255,176,31,.7)}
 .hud-bottom{align-items:flex-end}
 .hud-tag{font-size:clamp(8px,1.4vw,15px);letter-spacing:2px;background:rgba(0,20,6,.55);border:1px solid var(--green-dim);padding:2px 8px;text-shadow:0 0 5px rgba(60,255,110,.5)}
 .hud-tag b{color:#fff}

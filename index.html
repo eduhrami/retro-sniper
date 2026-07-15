@@ -38,7 +38,9 @@
           <span id="hud-time" class="hud-val big">60</span>
         </div>
         <div class="hud-box hud-right">
-          <span class="hud-label">MUNICIÓN</span>
+          <span class="hud-label">VIDA</span>
+          <span id="hud-health" class="hud-val health">♥♥♥♥♥</span>
+          <span class="hud-label" style="margin-top:4px">MUNICIÓN</span>
           <span id="hud-ammo" class="hud-val ammo">●●●●●●</span>
         </div>
       </div>
@@ -48,6 +50,15 @@
         <div class="hud-tag hud-warn" id="hud-msg"></div>
       </div>
     </div>
+
+    <!-- Aviso: un enemigo te apunta -->
+    <div id="threat" class="threat hidden">⚠ ¡TE APUNTAN — AGÁCHATE! ⚠</div>
+
+    <!-- Cobertura al agacharse -->
+    <div id="cover" class="cover"></div>
+
+    <!-- Botón de agacharse (ratón / táctil) -->
+    <div id="crouchBtn" class="crouch-btn hidden">▼ CUBRIRSE ▼<small>SHIFT</small></div>
 
     <!-- Efecto CRT -->
     <div class="crt-scanlines"></div>
@@ -65,10 +76,12 @@
             <li><b class="c-en">◆</b> Elimina a todos los objetivos antes de que acabe el tiempo.</li>
             <li><b class="c-am">▮</b> Munición limitada. Cada disparo cuenta.</li>
             <li><b class="c-de">✖</b> Cuidado con <b>señuelos</b> y <b>fauna</b>: gastan bala.</li>
+            <li><b class="c-de">☠</b> A veces un enemigo <b>te apunta y dispara</b>: si no te cubres, pierdes <b>vida</b>.</li>
+            <li><b class="c-en">▼</b> <b>Agáchate (SHIFT)</b> para esquivar sus balas. Cubierto no puedes disparar.</li>
           </ul>
         </div>
         <button id="startBtn" class="btn">INICIAR MISIÓN</button>
-        <p class="controls">RATÓN: apuntar &nbsp;·&nbsp; CLIC: disparar &nbsp;·&nbsp; MANTÉN CLIC DER. / ESPACIO: zoom</p>
+        <p class="controls">RATÓN apuntar &nbsp;·&nbsp; CLIC disparar &nbsp;·&nbsp; CLIC DER./ESPACIO zoom &nbsp;·&nbsp; SHIFT cubrirse</p>
       </div>
     </div>
   </div>
