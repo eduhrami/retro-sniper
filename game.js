@@ -139,6 +139,7 @@ const snd = {
   dodge(){ noise(0.06,0.12); beep(1200,0.05,'sine',0.06,1800); },   // bala esquivada
   hurt(){ beep(200,0.2,'sawtooth',0.22,90); noise(0.1,0.15); },
   run(){ beep(240,0.07,'square',0.05,300); beep(200,0.07,'square',0.05,260); }, // pasos al reubicarse
+  clank(){ noise(0.06,0.2); beep(520,0.06,'square',0.14,240); }, // bala contra la cobertura
   // grito de muerte de un enemigo (gruñido descendente)
   death(){ beep(420,0.16,'sawtooth',0.2,150); setTimeout(()=>beep(300,0.24,'sawtooth',0.18,90),70); noise(0.18,0.12); },
   // chillido de un animal/inocente al morir
@@ -356,6 +357,16 @@ function makeProp(L, x){
 }
 
 // ---------- Entidades humanas ----------
+// Coberturas "blandas": ramas/telas que no detienen una bala. El resto son
+// coberturas SÓLIDAS: mientras el enemigo esté agachado detrás, es INTOCABLE.
+const SOFT_COVER = new Set(['bush','seaweed','chair','banner','alienplant','shell','lamp','icespike']);
+
+// Un enemigo sólo puede ser alcanzado cuando se expone: al asomarse,
+// al apuntarte o mientras corre. Detrás de cobertura sólida y agachado, no.
+function enemyExposed(e){
+  return !e.hardCover || e.peeking || e.aiming || e.running;
+}
+
 function makeEnemy(L, prop){
   const height = randi(18,22);
   const side = Math.random()<0.5 ? -1 : 1;
@@ -363,15 +374,18 @@ function makeEnemy(L, prop){
   return {
     kind:'enemy', alive:true, x, baseX:x, y:GROUND, h:height, w:height*0.42,
     prop, side,
+    hardCover: !SOFT_COVER.has(prop.type),   // ¿su escondite detiene balas?
     reveal:L.baseReveal, base:L.baseReveal,
     peekT: rand(0.8,3.0), peeking:false, peekDur:0, peekLife:0,
     sway: Math.random()*6.28, swaySpd: rand(0.6,1.2),
     lean:0, dieT:0,
-    // ataque: solo algunos enemigos disparan (más seguido que antes)
-    canAttack: Math.random() < (L.aggro||0),
-    attackT: rand(3,7), aiming:false, aimTime:0, aimDur:0,
+    // se agachan/esconden por completo detrás de la cobertura
+    ducking:false, duckT: rand(1.5,4),
+    // ataque: disparan más seguido y hay más tiradores
+    canAttack: Math.random() < Math.min(0.9,(L.aggro||0)+0.12),
+    attackT: rand(2.5,6), aiming:false, aimTime:0, aimDur:0,
     // reubicación: tras cierto tiempo corren y cambian de escondite
-    relocT: rand(22,34), running:false, runFrom:0, runTo:0, runProg:0, runDur:0,
+    relocT: rand(18,30), running:false, runFrom:0, runTo:0, runProg:0, runDur:0,
     destProp:null, destSide:1
   };
 }
@@ -486,9 +500,11 @@ function update(dt){
       e.x = e.baseX + Math.sin(e.runProg*Math.PI*10)*0.7; // bamboleo de carrera
       if(t>=1){
         e.running=false; e.prop=e.destProp||e.prop; e.side=e.destSide;
+        e.hardCover = !SOFT_COVER.has(e.prop.type);   // el nuevo escondite manda
         e.baseX=e.runTo; e.lean=0;
         e.peekT = rand(game.L.peekEvery[0], game.L.peekEvery[1]);
-        e.relocT = rand(22,34); e.attackT = rand(3,7);
+        e.relocT = rand(18,30); e.attackT = rand(2.5,6);
+        e.ducking=false; e.duckT = rand(1.5,4);
       }
       continue;
     }
@@ -509,7 +525,8 @@ function update(dt){
         if(e.alive && Math.random()<0.45){ startRun(e); }
         else {
           e.peekT = rand(game.L.peekEvery[0], game.L.peekEvery[1]);
-          e.attackT = rand(4,9); // dispara más seguido que antes
+          e.attackT = rand(3,7); // vuelve a disparar pronto
+          e.ducking=true; e.duckT = rand(1.0,2.2); // se agacha tras disparar
         }
       }
     } else if(!e.peeking){
@@ -518,12 +535,18 @@ function update(dt){
         e.attackT -= dt;
         if(e.attackT<=0){ startAim(e); }
       }
+      // detrás de cobertura sólida: se agacha y se esconde del todo a ratos
+      if(e.hardCover){
+        e.duckT -= dt;
+        if(e.duckT<=0){ e.ducking=!e.ducking; e.duckT = e.ducking? rand(1.0,2.4) : rand(2.0,4.5); }
+      }
       if(!e.aiming && e.peekT<=0){
-        e.peeking=true; e.peekLife=0; e.peekDur=rand(0.7,1.3);
+        e.peeking=true; e.ducking=false; e.peekLife=0; e.peekDur=rand(0.7,1.3);
         e.leanDir = Math.random()<0.5?-1:1;
         snd.peek();
       }
-      e.reveal = lerp(e.reveal, e.base, dt*4);
+      const idleTarget = (e.hardCover && e.ducking) ? 0.03 : e.base;
+      e.reveal = lerp(e.reveal, idleTarget, dt*4);
     } else {
       e.peekLife += dt;
       const p = e.peekLife/e.peekDur;
@@ -1263,7 +1286,9 @@ function hex(c){
 
 function drawEnemy(L,e){
   if(!e.alive){ return; } // el cadáver se dibuja aparte
-  const box = humanShape(e.x, e.y, e.h, e.reveal, L.camo, {lean:e.lean, aiming:e.aiming});
+  // agachado detrás de la cobertura: silueta más baja
+  const hh = e.ducking ? e.h*0.55 : e.h;
+  const box = humanShape(e.x, e.y, hh, e.reveal, L.camo, {lean:e.lean, aiming:e.aiming});
   e._box = box;
   // destello sutil cuando se asoma mucho (pista extra de movimiento)
   if(e.peeking && e.reveal>0.55){
@@ -1478,14 +1503,14 @@ function startRun(e){
   const dest = pick(spots);
   const side = Math.random()<0.5?-1:1;
   const tx = clamp(dest.x + side*(dest.w*0.28), 14, W-14);
-  e.running=true; e.aiming=false; e.peeking=false;
+  e.running=true; e.aiming=false; e.peeking=false; e.ducking=false;
   e.runFrom=e.baseX; e.runTo=tx; e.runProg=0;
   e.runDur=clamp(Math.abs(tx-e.baseX)/70, 0.5, 2.4); // ~70 px/s
   e.destProp=dest; e.destSide=side;
   snd.run();
 }
 function startAim(e){
-  e.aiming=true; e.aimTime=0; e.aimDur=rand(1.1,1.6);
+  e.aiming=true; e.ducking=false; e.aimTime=0; e.aimDur=rand(1.1,1.6);
   e.leanDir = Math.random()<0.5?-1:1;
   snd.aim();
 }
@@ -1524,10 +1549,14 @@ function shoot(){
   const ax = game.aimX, ay = game.aimY;
   addPuff(ax,ay,'#fff',3,0.12);
 
-  // 1) enemigos (prioridad)
-  let target=null, tkind=null;
+  // 1) enemigos (prioridad). Sólo cuentan si están EXPUESTOS: detrás de una
+  //    cobertura sólida y agachados, la bala se queda en el objeto.
+  let target=null, tkind=null, blockedE=null;
   for(const e of game.enemies){
-    if(e.alive && e._box && inBox(ax,ay,e._box, 3)){ target=e; tkind='enemy'; break; }
+    if(e.alive && e._box && inBox(ax,ay,e._box, 3)){
+      if(enemyExposed(e)){ target=e; tkind='enemy'; break; }
+      blockedE = e;   // le diste a su cobertura
+    }
   }
   if(!target) for(const d of game.decoys){
     if(d.alive && d._box && inBox(ax,ay,d._box, 3)){ target=d; tkind='decoy'; break; }
@@ -1565,6 +1594,15 @@ function shoot(){
     updateHUD();
     if(game.hp<=0) return endLevel(false, person?'MATASTE A UN INOCENTE':'MATASTE A UN ANIMAL');
     flashMsg((person?'¡INOCENTE ABATIDO!':'¡ANIMAL ABATIDO!')+' −1 bala −1 vida', 1.7);
+  } else if(blockedE){
+    // la bala choca contra la cobertura: hay que esperar a que se exponga
+    snd.clank();
+    game.holes.push({x:ax|0,y:ay|0});
+    for(let i=0;i<4;i++) addPuff(ax, ay, '#ffd67a', 2, 0.25); // chispas
+    flashMsg('¡A CUBIERTO! espera a que salga', 1.5);
+    // a veces el impacto lo espanta y sale corriendo (queda al descubierto)
+    if(Math.random()<0.5) startRun(blockedE);
+    updateHUD();
   } else {
     // fallo
     snd.miss();
@@ -1786,7 +1824,7 @@ boot();
 
 // Hook de depuración (útil para pruebas automatizadas y consola)
 if(typeof window!=='undefined'){
-  window.__sniper = { buildLevel, drawScene, update, LEVELS, get game(){ return game; } };
+  window.__sniper = { buildLevel, drawScene, update, shoot, enemyExposed, LEVELS, get game(){ return game; } };
 }
 
 })();

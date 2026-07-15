@@ -19,14 +19,17 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 - Un **enemigo eliminado** = objetivo menos. Despeja la zona para pasar de nivel.
 - ❤️ Tienes **5 puntos de vida**. Si llegan a 0, misión fallida.
 - ☠️ **Los enemigos también disparan**: a veces uno **te apunta** — verás un destello rojo y el aviso *«¡TE APUNTAN!»*. Tienes ~1 segundo para reaccionar. Al apuntar **se exponen**, así que es tu oportunidad de dispararle primero.
-- 🏃 **Los enemigos se reubican:** cada ~30 s (y a veces justo después de dispararte) **corren a un nuevo escondite**. Mientras corren quedan **totalmente al descubierto** — el mejor momento para abatirlos. Al morir sueltan un **grito**; los animales/inocentes, un chillido.
+- 🛡️ **Coberturas sólidas:** los enemigos **se agachan y se esconden** detrás de muros, torres, máquinas, tanques, árboles, rocas… Mientras están agachados ahí, **tus balas rebotan contra el objeto** (suena un *clank* y ves chispas). **Sólo puedes matarlos cuando se exponen:** al **asomarse**, al **apuntarte** o mientras **corren**. Ten paciencia y aprieta el gatillo en esa ventana.
+  - Disparar a su cobertura **gasta bala**, pero confirma que hay alguien ahí… y hay un **50 % de que salga corriendo** (y quede al descubierto).
+  - Las coberturas **blandas** (arbustos, algas, estandartes…) **no** detienen balas: a esos enemigos les puedes dar siempre.
+- 🏃 **Los enemigos se reubican:** cada ~20-30 s (y a veces justo después de dispararte) **corren a un nuevo escondite**. Mientras corren quedan **totalmente al descubierto** — el mejor momento para abatirlos. Al morir sueltan un **grito**; los animales/inocentes, un chillido.
 - ▼ **Agáchate (SHIFT, un toque alterna)** para esquivar sus balas. Mientras estás cubierto **no puedes disparar**, pero **ninguna bala te da**.
 - 🪤 **Señuelos:** siluetas falsas. Se balancean pero **nunca se asoman con movimiento brusco**. Dispararles gasta una bala.
 - 🦌 **Fauna / inocentes:** animales y transeúntes que cruzan la escena. Si le disparas a uno por error, **lo ves morir** y pierdes **1 bala y 1 punto de vida**. ¡Disciplina de gatillo!
 - ⏳ Se pierde el nivel si se acaba el **tiempo**, la **munición** con objetivos vivos, o tu **vida**.
 
 ### 💡 Truco
-La clave es el **movimiento**. Un enemigo real "se asoma" cada pocos segundos (una parte del cuerpo aparece y su silueta gana contraste). Los señuelos no hacen eso. Usa el **zoom** para inspeccionar coberturas sospechosas: cactus, edificios, árboles y arbustos.
+La clave es el **movimiento y la paciencia**. Un enemigo real "se asoma" cada pocos segundos (una parte del cuerpo aparece y su silueta gana contraste). Los señuelos no hacen eso. Usa el **zoom** para vigilar coberturas sospechosas y **no malgastes balas contra el objeto**: apunta y **espera** a que asome, apunte o corra. Ese es el único instante en que puedes matarlo.
 
 ## 🗺️ Niveles (10 biomas)
 1. **Desierto** 🌵 — 3 objetivos · 14 balas · 60 s
