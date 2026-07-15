@@ -132,7 +132,12 @@ const snd = {
   aim(){ beep(500,0.12,'square',0.08,760); beep(760,0.12,'square',0.07); }, // aviso de puntería
   enemyfire(){ noise(0.14,0.3); beep(140,0.14,'sawtooth',0.18,50); },
   dodge(){ noise(0.06,0.12); beep(1200,0.05,'sine',0.06,1800); },   // bala esquivada
-  hurt(){ beep(200,0.2,'sawtooth',0.22,90); noise(0.1,0.15); }
+  hurt(){ beep(200,0.2,'sawtooth',0.22,90); noise(0.1,0.15); },
+  run(){ beep(240,0.07,'square',0.05,300); beep(200,0.07,'square',0.05,260); }, // pasos al reubicarse
+  // grito de muerte de un enemigo (gruñido descendente)
+  death(){ beep(420,0.16,'sawtooth',0.2,150); setTimeout(()=>beep(300,0.24,'sawtooth',0.18,90),70); noise(0.18,0.12); },
+  // chillido de un animal/inocente al morir
+  deathAnimal(){ beep(700,0.1,'square',0.16,1100); setTimeout(()=>beep(900,0.18,'triangle',0.15,220),50); }
 };
 
 // =====================================================================
@@ -339,9 +344,12 @@ function makeEnemy(L, prop){
     peekT: rand(0.8,3.0), peeking:false, peekDur:0, peekLife:0,
     sway: Math.random()*6.28, swaySpd: rand(0.6,1.2),
     lean:0, dieT:0,
-    // ataque: solo algunos enemigos disparan, y de forma poco frecuente
+    // ataque: solo algunos enemigos disparan (más seguido que antes)
     canAttack: Math.random() < (L.aggro||0),
-    attackT: rand(5,10), aiming:false, aimTime:0, aimDur:0
+    attackT: rand(3,7), aiming:false, aimTime:0, aimDur:0,
+    // reubicación: tras cierto tiempo corren y cambian de escondite
+    relocT: rand(22,34), running:false, runFrom:0, runTo:0, runProg:0, runDur:0,
+    destProp:null, destSide:1
   };
 }
 function makeDecoy(L, prop){
@@ -443,6 +451,28 @@ function update(dt){
   for(const e of game.enemies){
     if(!e.alive){ e.dieT+=dt; continue; }
     e.sway += dt*e.swaySpd;
+
+    // --- corriendo hacia un nuevo escondite (muy expuesto = vulnerable) ---
+    if(e.running){
+      e.runProg += dt/e.runDur;
+      const t = clamp(e.runProg,0,1);
+      e.baseX = lerp(e.runFrom, e.runTo, t);
+      e.reveal = lerp(e.reveal, 0.85, dt*7);   // se ve claramente mientras corre
+      e.lean = (e.runTo>e.runFrom?1:-1) * 1.2;
+      e.x = e.baseX + Math.sin(e.runProg*Math.PI*10)*0.7; // bamboleo de carrera
+      if(t>=1){
+        e.running=false; e.prop=e.destProp||e.prop; e.side=e.destSide;
+        e.baseX=e.runTo; e.lean=0;
+        e.peekT = rand(game.L.peekEvery[0], game.L.peekEvery[1]);
+        e.relocT = rand(22,34); e.attackT = rand(3,7);
+      }
+      continue;
+    }
+
+    // temporizador de reubicación: tras ~30 s cambian de sitio
+    e.relocT -= dt;
+    if(e.relocT<=0 && !e.aiming){ startRun(e); continue; }
+
     if(e.aiming){
       // al apuntar se EXPONE (más visible): oportunidad de dispararle primero
       e.aimTime += dt;
@@ -451,8 +481,12 @@ function update(dt){
       if(e.aimTime>=e.aimDur){
         enemyFire(e);
         e.aiming=false; e.peeking=false; e.lean=0;
-        e.peekT = rand(game.L.peekEvery[0], game.L.peekEvery[1]);
-        e.attackT = rand(8,16); // vuelve a ser poco frecuente
+        // tras disparar, a veces corre a cambiar de posición (al azar)
+        if(e.alive && Math.random()<0.45){ startRun(e); }
+        else {
+          e.peekT = rand(game.L.peekEvery[0], game.L.peekEvery[1]);
+          e.attackT = rand(4,9); // dispara más seguido que antes
+        }
       }
     } else if(!e.peeking){
       e.peekT -= dt;
@@ -478,7 +512,7 @@ function update(dt){
         e.lean=0;
       }
     }
-    e.x = e.baseX + Math.sin(e.sway)*0.6 + e.lean;
+    if(!e.running) e.x = e.baseX + Math.sin(e.sway)*0.6 + e.lean;
   }
 
   // aviso de amenaza (algún enemigo apuntándote)
@@ -1325,6 +1359,19 @@ function drawDistractor(L,d){
 // =====================================================================
 //  ATAQUE ENEMIGO
 // =====================================================================
+function startRun(e){
+  // elige otro escondite distinto al actual y corre hacia él
+  const spots = game.props.filter(p=>p.hides && p!==e.prop);
+  if(!spots.length){ e.relocT = rand(20,30); return; }
+  const dest = pick(spots);
+  const side = Math.random()<0.5?-1:1;
+  const tx = clamp(dest.x + side*(dest.w*0.28), 14, W-14);
+  e.running=true; e.aiming=false; e.peeking=false;
+  e.runFrom=e.baseX; e.runTo=tx; e.runProg=0;
+  e.runDur=clamp(Math.abs(tx-e.baseX)/70, 0.5, 2.4); // ~70 px/s
+  e.destProp=dest; e.destSide=side;
+  snd.run();
+}
 function startAim(e){
   e.aiming=true; e.aimTime=0; e.aimDur=rand(1.1,1.6);
   e.leanDir = Math.random()<0.5?-1:1;
@@ -1382,7 +1429,7 @@ function shoot(){
     game.killed++;
     game.corpses.push({x:target.x, y:target.y, h:target.h, t:0, dir:Math.random()<0.5?-1:1});
     game.corpses[game.corpses.length-1].t=0;
-    snd.hit(); flash('hit');
+    snd.hit(); snd.death(); flash('hit');
     for(let i=0;i<8;i++) addPuff(target.x, ay, '#b31414', 2, 0.5);
     flashMsg('OBJETIVO ELIMINADO', 1.2);
     // animar caída
@@ -1399,7 +1446,7 @@ function shoot(){
     // matas a un inocente: muere a la vista, pierdes bala Y vida
     const person = (target.type==='pedestrian' || target.type==='beachgoer' || target.type==='alien');
     target.alive=false; target.deadT=0; target.vy=-20; target.rot=0;
-    snd.animal(); snd.hurt();
+    snd.animal(); (person?snd.death:snd.deathAnimal)(); snd.hurt();
     for(let i=0;i<8;i++) addPuff(target.x, target.y-target.h*0.4, '#b31414', 2, 0.5);
     game.hp = Math.max(0, game.hp-1);
     flash('dmg'); game.shakeT = 0.2;

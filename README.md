@@ -18,7 +18,8 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 - **Munición limitada** (un poco más balas que enemigos). Cada disparo cuenta.
 - Un **enemigo eliminado** = objetivo menos. Despeja la zona para pasar de nivel.
 - ❤️ Tienes **5 puntos de vida**. Si llegan a 0, misión fallida.
-- ☠️ **Los enemigos también disparan** (poco frecuente): a veces uno **te apunta** — verás un destello rojo y el aviso *«¡TE APUNTAN!»*. Tienes ~1 segundo para reaccionar. Al apuntar **se exponen**, así que es tu oportunidad de dispararle primero.
+- ☠️ **Los enemigos también disparan**: a veces uno **te apunta** — verás un destello rojo y el aviso *«¡TE APUNTAN!»*. Tienes ~1 segundo para reaccionar. Al apuntar **se exponen**, así que es tu oportunidad de dispararle primero.
+- 🏃 **Los enemigos se reubican:** cada ~30 s (y a veces justo después de dispararte) **corren a un nuevo escondite**. Mientras corren quedan **totalmente al descubierto** — el mejor momento para abatirlos. Al morir sueltan un **grito**; los animales/inocentes, un chillido.
 - ▼ **Agáchate (SHIFT)** para esquivar sus balas. Mientras estás cubierto **no puedes disparar**, pero **ninguna bala te da**.
 - 🪤 **Señuelos:** siluetas falsas. Se balancean pero **nunca se asoman con movimiento brusco**. Dispararles gasta una bala.
 - 🦌 **Fauna / inocentes:** animales y transeúntes que cruzan la escena. Si le disparas a uno por error, **lo ves morir** y pierdes **1 bala y 1 punto de vida**. ¡Disciplina de gatillo!
