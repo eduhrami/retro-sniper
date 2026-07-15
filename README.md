@@ -11,7 +11,7 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 | Apuntar | Mover el ratón |
 | Disparar | Clic izquierdo |
 | Zoom de mira | Mantener **clic derecho** o **ESPACIO** |
-| **Cubrirse / agacharse** | Mantener **SHIFT** (o el botón ▼ CUBRIRSE) |
+| **Cubrirse / agacharse** | **SHIFT** (un toque te agachas, otro te levantas · o el botón ▼ CUBRIRSE) |
 | Móvil | Arrastrar para apuntar · soltar para disparar · dos dedos = zoom · botón para cubrirse |
 
 ### Reglas
@@ -20,7 +20,7 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 - ❤️ Tienes **5 puntos de vida**. Si llegan a 0, misión fallida.
 - ☠️ **Los enemigos también disparan**: a veces uno **te apunta** — verás un destello rojo y el aviso *«¡TE APUNTAN!»*. Tienes ~1 segundo para reaccionar. Al apuntar **se exponen**, así que es tu oportunidad de dispararle primero.
 - 🏃 **Los enemigos se reubican:** cada ~30 s (y a veces justo después de dispararte) **corren a un nuevo escondite**. Mientras corren quedan **totalmente al descubierto** — el mejor momento para abatirlos. Al morir sueltan un **grito**; los animales/inocentes, un chillido.
-- ▼ **Agáchate (SHIFT)** para esquivar sus balas. Mientras estás cubierto **no puedes disparar**, pero **ninguna bala te da**.
+- ▼ **Agáchate (SHIFT, un toque alterna)** para esquivar sus balas. Mientras estás cubierto **no puedes disparar**, pero **ninguna bala te da**.
 - 🪤 **Señuelos:** siluetas falsas. Se balancean pero **nunca se asoman con movimiento brusco**. Dispararles gasta una bala.
 - 🦌 **Fauna / inocentes:** animales y transeúntes que cruzan la escena. Si le disparas a uno por error, **lo ves morir** y pierdes **1 bala y 1 punto de vida**. ¡Disciplina de gatillo!
 - ⏳ Se pierde el nivel si se acaba el **tiempo**, la **munición** con objetivos vivos, o tu **vida**.
@@ -28,18 +28,19 @@ Eres un francotirador. Los enemigos están **MUY bien camuflados** en el paisaje
 ### 💡 Truco
 La clave es el **movimiento**. Un enemigo real "se asoma" cada pocos segundos (una parte del cuerpo aparece y su silueta gana contraste). Los señuelos no hacen eso. Usa el **zoom** para inspeccionar coberturas sospechosas: cactus, edificios, árboles y arbustos.
 
-## 🗺️ Niveles (9 biomas)
+## 🗺️ Niveles (10 biomas)
 1. **Desierto** 🌵 — 3 objetivos · 14 balas · 60 s
 2. **Playa** 🏖️ — 3 objetivos · 14 balas · 58 s
 3. **Ciudad** 🏙️ — 4 objetivos · 15 balas · 56 s
 4. **Castillos** 🏰 — 4 objetivos · 15 balas · 56 s
 5. **Bosque** 🌲 — 5 objetivos · 16 balas · 54 s
 6. **Casa abandonada** 🏚️ (¡estás dentro!) — 5 objetivos · 16 balas · 54 s
-7. **Bajo el mar** 🌊 — 5 objetivos · 16 balas · 54 s
-8. **Hielo** ❄️ — 6 objetivos · 17 balas · 52 s
-9. **Espacio exterior** 🚀 — 7 objetivos · 18 balas · 50 s
+7. **Fábrica abandonada** 🏭 (¡estás dentro!) — 6 objetivos · 17 balas · 54 s
+8. **Bajo el mar** 🌊 — 5 objetivos · 16 balas · 54 s
+9. **Hielo** ❄️ — 6 objetivos · 17 balas · 52 s
+10. **Espacio exterior** 🚀 — 7 objetivos · 18 balas · 50 s
 
-Cada bioma tiene su propio paisaje, coberturas donde esconderse (cactus, palmeras, edificios, torres y almenas, árboles, muebles rotos, corales, bloques de hielo, cristales alienígenas…) y su propia fauna que cruza la escena (aves, cangrejos, cuervos, caballeros, ratas, murciélagos, peces, pingüinos, ovnis, etc.). La **casa abandonada** se juega **desde el interior**: pared con ventanas y luz de luna, telarañas y suelo de tablones.
+Cada bioma tiene su propio paisaje, coberturas donde esconderse (cactus, palmeras, edificios, torres y almenas, árboles, muebles rotos, máquinas y tanques industriales, corales, bloques de hielo, cristales alienígenas…) y su propia fauna que cruza la escena (aves, cangrejos, cuervos, caballeros, ratas, murciélagos, peces, pingüinos, ovnis, etc.). La **casa** y la **fábrica** abandonadas se juegan **desde el interior**: ventanales sucios con luz mortecina, vigas y cadenas del techo, tuberías, charcos de aceite y suelo de hormigón.
 
 ## ▶️ Ejecutar
 Solo abre `index.html` en un navegador. En WSL:

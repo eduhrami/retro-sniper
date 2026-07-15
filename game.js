@@ -60,6 +60,11 @@ const LEVELS = [
     sky:['#3a3330','#2a2422','#17120f'], ground:['#4a3826','#2a1f14'], camo:'#2c2318', interior:true
   },
   {
+    biome:'FÁBRICA ABANDONADA', key:'factory', enemies:6, ammo:17, time:54, aggro:0.62,
+    baseReveal:0.18, peekReveal:0.66, peekEvery:[2.8,5.0], decoys:3, distractors:5,
+    sky:['#2e3338','#242a2e','#14181b'], ground:['#4a4e54','#292c30'], camo:'#3a3d38', interior:true
+  },
+  {
     biome:'BAJO EL MAR', key:'sea', enemies:5, ammo:16, time:54, aggro:0.6,
     baseReveal:0.18, peekReveal:0.68, peekEvery:[2.8,5.0], decoys:3, distractors:6,
     sky:['#1a90a0','#0e6d8a','#083f5c'], ground:['#b7a778','#8a7a50'], camo:'#2f5a5a'
@@ -255,6 +260,13 @@ function buildBackground(L){
     game.bg.push({type:'wall-crack', x:rand(0,W)});
     game.bg.push({type:'picture', x:rand(60,W-60), y:rand(40,70)});
     for(let i=0;i<3;i++) game.bg.push({type:'cobweb', x:i%2?W-4:4, y:2, s:rand(16,26)});
+  } else if(L.key==='factory'){
+    // nave industrial: ventanales altos con luz mortecina y vigas del techo
+    for(let i=0;i<3;i++) game.bg.push({type:'factory-window', x:26+i*((W-52)/3)+rand(-8,8), y:rand(20,34), w:rand(40,60), h:rand(30,44)});
+    game.bg.push({type:'girder', y:14}); game.bg.push({type:'girder', y:26});
+    for(let i=0;i<3;i++) game.bg.push({type:'chain', x:rand(40,W-40), len:rand(20,46)});
+    game.bg.push({type:'gauge', x:rand(50,W-50), y:rand(50,80)});
+    game.bg.push({type:'hazard', y:GROUND-4});
   }
 }
 
@@ -317,6 +329,15 @@ function makeProp(L, x){
     else if(p.type==='doorway'){ p.h=rand(40,56); p.w=rand(20,30); }
     else if(p.type==='column'){ p.h=rand(50,70); p.w=rand(10,16); }
     else { p.h=rand(24,34); p.w=rand(22,32); p.hides=false; } // window (tapiado)
+  } else if(L.key==='factory'){
+    p.type = pick(['machine','tank','crate','barrel','pillar','conveyor','panel']);
+    if(p.type==='machine'){ p.h=rand(30,46); p.w=rand(28,42); }
+    else if(p.type==='tank'){ p.h=rand(36,54); p.w=rand(20,30); }
+    else if(p.type==='crate'){ p.h=rand(12,20); p.w=rand(14,22); }
+    else if(p.type==='barrel'){ p.h=rand(16,24); p.w=rand(12,16); p.hides=Math.random()<0.7; }
+    else if(p.type==='pillar'){ p.h=rand(52,72); p.w=rand(10,16); }
+    else if(p.type==='conveyor'){ p.h=rand(12,18); p.w=rand(34,50); }
+    else { p.h=rand(22,32); p.w=rand(16,24); } // panel (cuadro de control)
   } else {
     p.type='rock'; p.h=rand(10,20); p.w=rand(16,30);
   }
@@ -327,6 +348,8 @@ function makeProp(L, x){
   else if(p.type==='umbrella') p.tint=pick(['#d94a4a','#4a7ad9','#d9c04a']);
   else if(p.type==='banner') p.tint=pick(['#a33','#36c','#3a3','#c93','#639']);
   else if(p.type==='sofa') p.tint=pick(['#5a3a4a','#3a4a5a','#4a4a3a','#5a4030']);
+  else if(p.type==='barrel' && L.key==='factory') p.tint=pick(['#7a5a2a','#5a6a3a','#6a3a2a','#3a5a6a','#6a6a3a']);
+  else if(p.type==='machine' || p.type==='tank' || p.type==='panel') p.tint=pick(['#565b62','#4a5258','#5a5248']);
   else if(p.type==='building'){ p.lit=[]; for(let i=0;i<260;i++) p.lit.push(Math.random()<0.3); }
   p.seed = Math.random()*1000;
   return p;
@@ -407,7 +430,8 @@ const DIST_BY_BIOME = {
   ice:['penguin','penguin','seal','snowbird','seal'],
   space:['ufo','ufo','asteroid','alien','shootingstar'],
   castle:['crow','crow','raven','knight','crow'],
-  abandoned:['rat','rat','bat','moth','spider']
+  abandoned:['rat','rat','bat','moth','spider'],
+  factory:['rat','rat','pigeon','bat','moth']
 };
 function makeDistractor(L){
   const dir = Math.random()<0.5?1:-1;
@@ -750,6 +774,32 @@ function drawBackground(L){
       const cx=b.x, cy=b.y, dir=b.x<W/2?1:-1;
       for(let a=0;a<4;a++){ bx.beginPath(); bx.moveTo(cx,cy); bx.lineTo(cx+dir*b.s*Math.cos(a*0.4), cy+b.s*Math.sin(a*0.4)); bx.stroke(); }
       for(let r=6;r<b.s;r+=6){ bx.beginPath(); bx.moveTo(cx+dir*r,cy); bx.quadraticCurveTo(cx+dir*r*0.7,cy+r*0.7,cx,cy+r); bx.stroke(); }
+    } else if(b.type==='factory-window'){
+      bx.fillStyle='#1a1d20'; bx.fillRect(b.x,b.y,b.w,b.h);                 // marco
+      bx.fillStyle='#5b6570'; bx.fillRect(b.x+2,b.y+2,b.w-4,b.h-4);         // vidrio sucio
+      bx.fillStyle='rgba(120,140,160,.35)';                                // reflejo diagonal
+      bx.beginPath(); bx.moveTo(b.x+2,b.y+b.h-4); bx.lineTo(b.x+b.w*0.5,b.y+2); bx.lineTo(b.x+b.w*0.7,b.y+2); bx.lineTo(b.x+2,b.y+b.h-4); bx.fill();
+      bx.strokeStyle='#14171a'; bx.lineWidth=1;                            // barrotes
+      for(let gx=b.x+b.w/4; gx<b.x+b.w-2; gx+=b.w/4){ bx.beginPath(); bx.moveTo(gx,b.y+2); bx.lineTo(gx,b.y+b.h-2); bx.stroke(); }
+      bx.beginPath(); bx.moveTo(b.x+2,b.y+b.h/2); bx.lineTo(b.x+b.w-2,b.y+b.h/2); bx.stroke();
+      bx.fillStyle='#0a0c0e';                                              // cristales rotos
+      bx.fillRect(b.x+b.w*0.55,b.y+b.h*0.2,3,4); bx.fillRect(b.x+b.w*0.2,b.y+b.h*0.6,4,3);
+    } else if(b.type==='girder'){
+      bx.fillStyle='#20242a'; bx.fillRect(0,b.y,W,4);                      // viga horizontal
+      bx.fillStyle='rgba(0,0,0,.4)'; bx.fillRect(0,b.y+3,W,1);
+      bx.fillStyle='#2a2f36'; for(let x=10;x<W;x+=40) bx.fillRect(x,b.y-4,3,4); // remaches verticales
+    } else if(b.type==='chain'){
+      bx.strokeStyle='#3a3f45'; bx.lineWidth=1;
+      const sw=Math.sin(game.t*0.8+b.x)*1.5;
+      for(let y=14;y<14+b.len;y+=3){ bx.beginPath(); bx.arc(b.x+sw*(y-14)/b.len,y,1.4,0,6.3); bx.stroke(); }
+      if(Math.random()<1){ bx.fillStyle='#2a2d31'; bx.fillRect(b.x-2+sw,14+b.len,4,3); } // gancho
+    } else if(b.type==='gauge'){
+      bx.fillStyle='#2a2d31'; bx.beginPath(); bx.arc(b.x,b.y,5,0,6.3); bx.fill();
+      bx.strokeStyle='#6a7078'; bx.lineWidth=1; bx.beginPath(); bx.arc(b.x,b.y,5,0,6.3); bx.stroke();
+      bx.strokeStyle='#d9534a'; bx.beginPath(); bx.moveTo(b.x,b.y); bx.lineTo(b.x+3,b.y-2); bx.stroke(); // aguja
+    } else if(b.type==='hazard'){
+      for(let x=0;x<W;x+=10){ bx.fillStyle=((x/10)|0)%2?'#c9a227':'#1a1a1a'; bx.fillRect(x,b.y,10,3); }
+      bx.globalAlpha=.25; bx.fillStyle='#000'; bx.fillRect(0,b.y,W,3); bx.globalAlpha=1;
     }
   }
   if(L.key==='desert'){ // sol
@@ -800,6 +850,15 @@ function drawGroundTexture(L){
     for(let y=GROUND+10;y<H;y+=12){ bx.globalAlpha=.5; bx.beginPath(); bx.moveTo(0,y); bx.lineTo(W,y+4); bx.stroke(); bx.globalAlpha=1; }
     bx.fillStyle='rgba(80,60,40,.3)';
     for(let i=0;i<30;i++) bx.fillRect((i*53%W), GROUND+((i*31)%(H-GROUND)), 2,1);
+  } else if(L.key==='factory'){
+    // losas de hormigón con juntas y manchas de aceite
+    bx.strokeStyle='rgba(0,0,0,.3)'; bx.lineWidth=1;
+    for(let x=0;x<=W;x+=40){ bx.beginPath(); bx.moveTo(x,GROUND); bx.lineTo(x,H); bx.stroke(); }
+    for(let y=GROUND+12;y<H;y+=14){ bx.beginPath(); bx.moveTo(0,y); bx.lineTo(W,y); bx.stroke(); }
+    bx.fillStyle='rgba(0,0,0,.28)'; // charcos de aceite
+    for(let i=0;i<4;i++){ const x=(i*97%W), y=GROUND+8+((i*37)%(H-GROUND-8)); bx.beginPath(); bx.ellipse(x,y,rand(6,12),rand(2,4),0,0,6.3); bx.fill(); }
+    bx.fillStyle='rgba(150,120,60,.25)'; // óxido
+    for(let i=0;i<24;i++) bx.fillRect((i*61%W), GROUND+((i*29)%(H-GROUND)), 2,1);
   } else {
     bx.fillStyle='rgba(20,40,15,.5)';
     for(let i=0;i<80;i++){ const x=(i*61%W), y=GROUND+((i*37)%(H-GROUND)); bx.fillRect(x,y,1,rand(2,4)); }
@@ -963,7 +1022,7 @@ function drawPropBack(L,p){
     for(let yy=GROUND-p.h+5; yy<GROUND; yy+=7) bx.strokeRect(p.x-p.w/2+.5,yy+.5,p.w-1,7);
     bx.fillStyle='#5a544c'; for(let mx=p.x-p.w/2; mx<p.x+p.w/2-2; mx+=10) bx.fillRect(mx,GROUND-p.h-5,6,5); // almenas
   } else if(p.type==='barrel'){
-    bx.fillStyle='#6a4a28'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
+    bx.fillStyle=p.tint||'#6a4a28'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
     bx.strokeStyle='#3a2a16'; bx.lineWidth=1;
     bx.strokeRect(p.x-p.w/2+.5,GROUND-p.h+.5,p.w-1,p.h-1);
     bx.beginPath(); bx.moveTo(p.x-p.w/2,GROUND-p.h*0.66); bx.lineTo(p.x+p.w/2,GROUND-p.h*0.66);
@@ -1012,6 +1071,48 @@ function drawPropBack(L,p){
     bx.strokeStyle='#4a3826'; bx.lineWidth=2; // tablas cruzadas
     bx.beginPath(); bx.moveTo(p.x-p.w/2+2,GROUND-p.h+4); bx.lineTo(p.x+p.w/2-2,GROUND-6);
     bx.moveTo(p.x+p.w/2-2,GROUND-p.h+4); bx.lineTo(p.x-p.w/2+2,GROUND-6); bx.stroke();
+  }
+  // ---- FÁBRICA ABANDONADA ----
+  else if(p.type==='machine'){
+    bx.fillStyle=p.tint||'#565b62'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
+    bx.fillStyle='rgba(255,255,255,.06)'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,2);
+    bx.fillStyle='rgba(0,0,0,.3)'; bx.fillRect(p.x+p.w/2-3,GROUND-p.h,3,p.h);
+    bx.strokeStyle='#2a2d31'; bx.lineWidth=1; // rejilla de ventilación
+    for(let yy=GROUND-p.h+6; yy<GROUND-6; yy+=4){ bx.beginPath(); bx.moveTo(p.x-p.w/2+4,yy); bx.lineTo(p.x-2,yy); bx.stroke(); }
+    bx.fillStyle='#8a9098'; bx.beginPath(); bx.arc(p.x+p.w*0.25,GROUND-p.h*0.6,3,0,6.3); bx.fill(); // dial
+    bx.strokeStyle='#d9534a'; bx.beginPath(); bx.moveTo(p.x+p.w*0.25,GROUND-p.h*0.6); bx.lineTo(p.x+p.w*0.25+2,GROUND-p.h*0.6-2); bx.stroke();
+    bx.fillStyle='#3a3f45'; bx.fillRect(p.x-p.w*0.2,GROUND-p.h-6,4,6); // tubo superior
+    bx.fillStyle=(Math.sin(game.t*3+p.seed)>0)?'#3cff6e':'#173a24'; bx.fillRect(p.x+p.w*0.32,GROUND-p.h+4,2,2); // piloto
+  } else if(p.type==='tank'){
+    bx.fillStyle=p.tint||'#4a5258'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
+    bx.beginPath(); bx.ellipse(p.x,GROUND-p.h,p.w/2,4,0,Math.PI,0); bx.fill(); // domo
+    bx.fillStyle='rgba(255,255,255,.10)'; bx.fillRect(p.x-p.w/2,GROUND-p.h,3,p.h);
+    bx.fillStyle='rgba(0,0,0,.28)'; bx.fillRect(p.x+p.w/2-3,GROUND-p.h,3,p.h);
+    bx.strokeStyle='rgba(0,0,0,.3)'; bx.lineWidth=1;
+    for(let yy=GROUND-p.h+8; yy<GROUND; yy+=10){ bx.beginPath(); bx.moveTo(p.x-p.w/2,yy); bx.lineTo(p.x+p.w/2,yy); bx.stroke(); }
+    bx.fillStyle='#3a3f45'; bx.fillRect(p.x+p.w/2,GROUND-p.h*0.5,5,3); // tubería
+    bx.fillStyle='#c9a227'; bx.beginPath(); bx.moveTo(p.x,GROUND-p.h*0.58); bx.lineTo(p.x-4,GROUND-p.h*0.42); bx.lineTo(p.x+4,GROUND-p.h*0.42); bx.fill(); // ⚠
+    bx.fillStyle='#000'; bx.fillRect(p.x-0.5,GROUND-p.h*0.52,1,2);
+  } else if(p.type==='pillar'){
+    bx.fillStyle='#4a4e54'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
+    bx.fillStyle='#3a3d42'; bx.fillRect(p.x-p.w/2,GROUND-p.h,3,p.h); bx.fillRect(p.x+p.w/2-3,GROUND-p.h,3,p.h); // viga en I
+    bx.fillStyle='rgba(255,255,255,.06)'; bx.fillRect(p.x-p.w*0.15,GROUND-p.h,2,p.h);
+    bx.fillStyle='#2a2d31'; for(let yy=GROUND-p.h+6; yy<GROUND; yy+=12){ bx.fillRect(p.x-p.w*0.35,yy,2,2); bx.fillRect(p.x+p.w*0.25,yy,2,2); }
+    bx.fillStyle='rgba(150,90,40,.35)'; bx.fillRect(p.x-p.w/2,GROUND-8,p.w,8); // óxido base
+  } else if(p.type==='conveyor'){
+    bx.fillStyle='#3a3f45'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,4); // cinta
+    bx.fillStyle='#2a2d31'; bx.fillRect(p.x-p.w/2,GROUND-p.h+4,p.w,3);
+    bx.fillStyle='#565b62'; bx.beginPath(); bx.arc(p.x-p.w/2+3,GROUND-p.h+2,3,0,6.3); bx.arc(p.x+p.w/2-3,GROUND-p.h+2,3,0,6.3); bx.fill(); // rodillos
+    bx.fillStyle='#3a3f45'; bx.fillRect(p.x-p.w/2+4,GROUND-p.h+6,3,p.h-6); bx.fillRect(p.x+p.w/2-7,GROUND-p.h+6,3,p.h-6); // patas
+    bx.fillStyle='#6a5a3a'; bx.fillRect(p.x-p.w*0.2,GROUND-p.h-6,8,6); // caja encima
+  } else if(p.type==='panel'){
+    bx.fillStyle=p.tint||'#5a5248'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,p.h);
+    bx.fillStyle='#2a2d31'; bx.fillRect(p.x-p.w/2,GROUND-p.h,p.w,3);
+    bx.fillStyle='#0a2a1a'; bx.fillRect(p.x-p.w*0.35,GROUND-p.h+5,p.w*0.7,p.h*0.35); // pantalla
+    bx.fillStyle='rgba(60,255,110,.5)';
+    for(let k=0;k<4;k++){ const yy=GROUND-p.h+7+k*3; bx.fillRect(p.x-p.w*0.3, yy, p.w*0.5*(0.4+0.5*Math.abs(Math.sin(p.seed+k))), 1); }
+    const cols=['#d9534a','#c9a227','#3cff6e'];
+    for(let i=0;i<3;i++){ bx.fillStyle=cols[i]; bx.beginPath(); bx.arc(p.x-p.w*0.25+i*p.w*0.25,GROUND-p.h*0.28,2,0,6.3); bx.fill(); }
   }
   bx.restore();
 }
@@ -1077,7 +1178,7 @@ function drawPropFront(L,p){
   else if(p.type==='tower' || p.type==='wall'){
     bx.fillStyle='#5a544c'; bx.fillRect(p.x-p.w/2-1,GROUND-4,p.w+2,4); // base saliente
   } else if(p.type==='barrel'){
-    bx.fillStyle='#5a3e20'; bx.fillRect(p.x-p.w*0.2,GROUND-p.h*0.4,p.w*0.4,p.h*0.4);
+    bx.fillStyle=p.tint||'#5a3e20'; bx.fillRect(p.x-p.w*0.2,GROUND-p.h*0.4,p.w*0.4,p.h*0.4);
   } else if(p.type==='well'){
     bx.fillStyle='#4a443c'; bx.fillRect(p.x-p.w/2-1,GROUND-p.h*0.4,p.w+2,p.h*0.4);
   }
@@ -1091,6 +1192,17 @@ function drawPropFront(L,p){
     bx.fillStyle='#050403'; bx.fillRect(p.x-p.w/2+3,GROUND-p.h*0.4,p.w-6,p.h*0.4); // sombra que oculta
   } else if(p.type==='column'){
     bx.fillStyle='#4a4038'; bx.fillRect(p.x-p.w/2,GROUND-6,p.w,6);
+  }
+  // fábrica
+  else if(p.type==='machine' || p.type==='panel'){
+    bx.fillStyle='#2a2d31'; bx.fillRect(p.x-p.w/2-1,GROUND-5,p.w+2,5);
+  } else if(p.type==='tank'){
+    bx.fillStyle='#3a3f45'; bx.fillRect(p.x-p.w*0.4,GROUND-p.h*0.35,p.w*0.8,3); // tubería que cruza
+    bx.fillStyle='#2a2d31'; bx.fillRect(p.x-p.w/2-1,GROUND-4,p.w+2,4);
+  } else if(p.type==='pillar'){
+    bx.fillStyle='#3a3d42'; bx.fillRect(p.x-p.w/2-2,GROUND-6,p.w+4,6); // placa base
+  } else if(p.type==='conveyor'){
+    bx.fillStyle='#2a2d31'; bx.fillRect(p.x-p.w/2,GROUND-p.h*0.5,p.w,2); // riel delantero
   }
   bx.restore();
 }
@@ -1625,22 +1737,20 @@ function bindInput(){
   window.addEventListener('mouseup', e=>{ if(e.button===2) game.zoom=false; });
   D.stage.addEventListener('contextmenu', e=>e.preventDefault());
   window.addEventListener('keydown', e=>{
-    if(e.code==='Space'){ e.preventDefault(); if(!game.crouched) game.zoom=true; }
-    if(e.code==='ShiftLeft'||e.code==='ShiftRight'){ e.preventDefault(); setCrouch(true); }
+    if(e.code==='Space'){ e.preventDefault(); if(!game.crouched) game.zoom=true; }   // zoom
+    if((e.code==='ShiftLeft'||e.code==='ShiftRight') && !e.repeat){ e.preventDefault(); setCrouch(!game.crouched); } // agacharse (alterna)
     if(e.code==='Enter' && game.screen==='menu'){ startLevel(0); }
   });
   window.addEventListener('keyup', e=>{
     if(e.code==='Space') game.zoom=false;
-    if(e.code==='ShiftLeft'||e.code==='ShiftRight') setCrouch(false);
   });
 
-  // botón cubrirse (ratón + táctil): mantener presionado
-  const press = e=>{ e.preventDefault(); setCrouch(true); };
-  const release = e=>{ e.preventDefault(); setCrouch(false); };
-  D.crouchBtn.addEventListener('mousedown', press);
-  window.addEventListener('mouseup', ()=>{ if(game.crouched) setCrouch(false); });
-  D.crouchBtn.addEventListener('touchstart', press, {passive:false});
-  D.crouchBtn.addEventListener('touchend', release, {passive:false});
+  // botón cubrirse (ratón + táctil): un toque alterna agachado/de pie
+  const toggle = e=>{ e.preventDefault(); e.stopPropagation(); setCrouch(!game.crouched); };
+  const swallow = e=>{ e.preventDefault(); e.stopPropagation(); };  // evita que el toque dispare
+  D.crouchBtn.addEventListener('mousedown', toggle);
+  D.crouchBtn.addEventListener('touchstart', toggle, {passive:false});
+  D.crouchBtn.addEventListener('touchend', swallow, {passive:false});
 
   // touch (móvil): tocar = apuntar+disparar; dos dedos = zoom
   let crouchTouchOnBtn=false;
